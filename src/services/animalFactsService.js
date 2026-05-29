@@ -8,7 +8,7 @@
 
 import axios from 'axios';
 
-const WIKIPEDIA_BASE_URL = 'https://en.wikipedia.org/api/rest_v1/page/summary';
+const WIKIPEDIA_BASE_URL = 'https://pt.wikipedia.org/api/rest_v1/page/summary';
 
 /**
  * @typedef {Object} AnimalFact

@@ -153,8 +153,8 @@ function App() {
   const lastFetchedAnimalRef = useRef(null);
   useEffect(() => {
     if (!lastMatchedAnimal) return;
-    if (lastFetchedAnimalRef.current === lastMatchedAnimal.id) return;
-    lastFetchedAnimalRef.current = lastMatchedAnimal.id;
+    if (lastFetchedAnimalRef.current === lastMatchedAnimal.animalId) return;
+    lastFetchedAnimalRef.current = lastMatchedAnimal.animalId;
     fetchFact(lastMatchedAnimal.wikiTitle);
   }, [lastMatchedAnimal, fetchFact]);
 
