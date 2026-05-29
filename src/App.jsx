@@ -18,6 +18,29 @@ import useLeaderboard from './hooks/useLeaderboard';
 import useMemory from './hooks/useMemory';
 import './App.css';
 
+// ─── Paisagens por animal ────────────────────────────────────────────────────
+const BASE = 'https://images.unsplash.com/';
+const Q    = '?auto=format&fit=crop&w=1920&q=80';
+
+const ANIMAL_BACKGROUNDS = {
+  default:  `${BASE}photo-1441974231531-c6227db76b6e${Q}`, // floresta tropical
+  lion:     `${BASE}photo-1516426122078-c23e76319801${Q}`, // savana africana
+  elephant: `${BASE}photo-1521651201144-634f700b36ef${Q}`, // planícies africanas
+  leopard:  `${BASE}photo-1534188753412-3e26d0d618d6${Q}`, // selva africana
+  gorilla:  `${BASE}photo-1510529692919-3a7e3265c234${Q}`, // floresta tropical densa
+  tiger:    `${BASE}photo-1549366021-9f761d450615${Q}`,    // selva indiana
+  panda:    `${BASE}photo-1550236520-7050f3582da0${Q}`,    // floresta de bambu
+  wolf:     `${BASE}photo-1466854076813-4aa9ac0fc347${Q}`, // floresta nevosa
+  eagle:    `${BASE}photo-1464822759023-fed622ff2c3b${Q}`, // picos montanhosos
+};
+
+const loadTheme = () => {
+  try { return localStorage.getItem('jogo_memoria_theme') || 'dark'; } catch { return 'dark'; }
+};
+const saveTheme = (t) => {
+  try { localStorage.setItem('jogo_memoria_theme', t); } catch { /* silent */ }
+};
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const formatTime = (seconds) => {
@@ -149,6 +172,40 @@ function App() {
   const isPlaying = gameStatus === GAME_STATUS.PLAYING;
   const isWon = gameStatus === GAME_STATUS.WON;
 
+  const [theme, setTheme] = useState(loadTheme);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((t) => {
+      const next = t === 'dark' ? 'light' : 'dark';
+      saveTheme(next);
+      return next;
+    });
+  }, []);
+
+  // ── Background crossfade ──────────────────────────────────────────────────
+  const defaultBg = ANIMAL_BACKGROUNDS.default;
+  const [activeBg, setActiveBg] = useState(0);
+  const [bgUrls, setBgUrls] = useState([defaultBg, defaultBg]);
+  const activeBgRef = useRef(0);
+
+  const switchBackground = useCallback((url) => {
+    const next = 1 - activeBgRef.current;
+    setBgUrls((prev) => {
+      const updated = [...prev];
+      updated[next] = url;
+      return updated;
+    });
+    setActiveBg(next);
+    activeBgRef.current = next;
+  }, []);
+
+  useEffect(() => {
+    if (lastMatchedAnimal) {
+      const url = ANIMAL_BACKGROUNDS[lastMatchedAnimal.animalId] ?? defaultBg;
+      switchBackground(url);
+    }
+  }, [lastMatchedAnimal, switchBackground, defaultBg]);
+
   // Fact fetching: busca ao encontrar novo par
   const lastFetchedAnimalRef = useRef(null);
   useEffect(() => {
@@ -181,7 +238,8 @@ function App() {
     lastFetchedAnimalRef.current = null;
     clearFact();
     resetGame();
-  }, [clearFact, resetGame]);
+    switchBackground(defaultBg);
+  }, [clearFact, resetGame, switchBackground, defaultBg]);
 
   const handleChangePlayer = useCallback(() => {
     recordedRef.current = false;
@@ -190,13 +248,21 @@ function App() {
     resetGame();
     setPlayerName('');
     savePlayerName('');
-  }, [clearFact, resetGame]);
+    switchBackground(defaultBg);
+  }, [clearFact, resetGame, switchBackground, defaultBg]);
 
   if (!playerName) {
     return (
-      <main className="app-shell">
+      <main className="app-shell" data-theme={theme}>
+        <div className="app-bg" style={{ backgroundImage: `url(${bgUrls[0]})` }} data-active={activeBg === 0} />
+        <div className="app-bg" style={{ backgroundImage: `url(${bgUrls[1]})` }} data-active={activeBg === 1} />
         <div className="app-shell__aurora app-shell__aurora--one" aria-hidden="true" />
         <div className="app-shell__aurora app-shell__aurora--two" aria-hidden="true" />
+        <div className="theme-toggle-floating">
+          <button type="button" className="btn-theme" onClick={toggleTheme} aria-label="Alternar tema">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </div>
         <div className="container py-4 py-lg-5">
           <PlayerSetup onStartGame={handleStartGame} />
         </div>
@@ -205,9 +271,9 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
-      <div className="app-shell__aurora app-shell__aurora--one" aria-hidden="true" />
-      <div className="app-shell__aurora app-shell__aurora--two" aria-hidden="true" />
+    <main className="app-shell" data-theme={theme}>
+      <div className="app-bg" style={{ backgroundImage: `url(${bgUrls[0]})` }} data-active={activeBg === 0} />
+      <div className="app-bg" style={{ backgroundImage: `url(${bgUrls[1]})` }} data-active={activeBg === 1} />
 
       <div className="container-xl py-3 py-lg-4">
         {/* Cabeçalho */}
@@ -219,13 +285,24 @@ function App() {
               <span className="game-header__player"> — {playerName}</span>
             </h1>
           </div>
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            onClick={handleChangePlayer}
-          >
-            Trocar jogador
-          </button>
+          <div className="game-header__actions">
+            <button
+              type="button"
+              className="btn-theme"
+              onClick={toggleTheme}
+              aria-label="Alternar tema"
+              title={theme === 'dark' ? 'Tema claro' : 'Tema escuro'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm"
+              onClick={handleChangePlayer}
+            >
+              Trocar jogador
+            </button>
+          </div>
         </header>
 
         {/* Stats bar */}
