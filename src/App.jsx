@@ -12,7 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MemoryBoard from './components/MemoryBoard/MemoryBoard';
 import PlayerSetup from './components/PlayerSetup/PlayerSetup';
-import { GAME_SESSION_STORAGE_KEY, GAME_STATUS, NIELSEN_HEURISTICS } from './domain/constants';
+import { GAME_SESSION_STORAGE_KEY, GAME_STATUS } from './domain/constants';
 import useAnimalFact from './hooks/useAnimalFact';
 import useLeaderboard from './hooks/useLeaderboard';
 import useMemory from './hooks/useMemory';
@@ -53,14 +53,14 @@ const StatItem = ({ icon, label, value, highlight }) => (
 );
 
 const LeaderboardSection = ({ entries, onClear }) => (
-  <section className="glass-panel panel-spacing mt-4">
+  <section className="glass-panel panel-spacing h-100">
     <div className="panel-heading">
       <div>
         <span className="eyebrow">Sessão</span>
         <h2 className="panel-title">Leaderboard</h2>
       </div>
       <button type="button" className="btn btn-outline-secondary btn-sm" onClick={onClear}>
-        Limpar ranking
+        Limpar
       </button>
     </div>
 
@@ -88,49 +88,45 @@ const LeaderboardSection = ({ entries, onClear }) => (
 );
 
 const FactSection = ({ animal, fact, isLoading, error }) => (
-  <section className="glass-panel panel-spacing mt-4">
-    <div className="panel-heading">
-      <div>
-        <span className="eyebrow">HTTP + Conteúdo educativo</span>
-        <h2 className="panel-title">Curiosidade do animal</h2>
-      </div>
+  <section className="glass-panel panel-spacing h-100">
+    <div>
+      <span className="eyebrow">Conteúdo educativo</span>
+      <h2 className="panel-title">Curiosidade</h2>
     </div>
 
     {!animal && !isLoading && (
-      <p className="empty-state mb-0">
-        Encontre um par de animais para carregar uma curiosidade em tempo real da Wikipédia.
+      <p className="empty-state mt-2 mb-0">
+        Encontre um par para carregar uma curiosidade da Wikipédia em tempo real! 🌍
       </p>
     )}
 
     {isLoading && (
-      <div className="fact-card fact-card--loading" role="status" aria-live="polite">
+      <div className="fact-card fact-card--loading mt-2" role="status" aria-live="polite">
         <div className="spinner-border text-success" aria-hidden="true" />
-        <span>Buscando curiosidade sobre {animal?.name}…</span>
+        <span>Buscando sobre {animal?.name}…</span>
       </div>
     )}
 
     {error && !isLoading && (
-      <div className="alert alert-warning mb-0" role="alert">{error}</div>
+      <div className="alert alert-warning mt-2 mb-0" role="alert">{error}</div>
     )}
 
     {fact && !isLoading && (
-      <article className="fact-card">
-        <div className="fact-card__intro">
-          <div className="fact-card__animal">
-            <span className="fact-card__emoji" aria-hidden="true">{animal?.emoji}</span>
-            <div>
-              <h3 className="fact-card__title">{fact.title}</h3>
-              <p className="fact-card__subtitle">Espécie ameaçada de extinção – ODS 15</p>
-            </div>
+      <article className="fact-card mt-2">
+        <div className="fact-card__animal">
+          <span className="fact-card__emoji" aria-hidden="true">{animal?.emoji}</span>
+          <div>
+            <h3 className="fact-card__title">{fact.title}</h3>
+            <p className="fact-card__subtitle">ODS 15 – Vida Terrestre</p>
           </div>
-          {fact.thumbnail && (
-            <img
-              src={fact.thumbnail}
-              alt={`Imagem de ${animal?.name}`}
-              className="fact-card__image"
-            />
-          )}
         </div>
+        {fact.thumbnail && (
+          <img
+            src={fact.thumbnail}
+            alt={`Imagem de ${animal?.name}`}
+            className="fact-card__image w-100"
+          />
+        )}
         <p className="fact-card__text">{fact.extract}</p>
       </article>
     )}
@@ -213,8 +209,8 @@ function App() {
       <div className="app-shell__aurora app-shell__aurora--one" aria-hidden="true" />
       <div className="app-shell__aurora app-shell__aurora--two" aria-hidden="true" />
 
-      <div className="container py-4 py-lg-5">
-        {/* Cabeçalho do jogo */}
+      <div className="container-xl py-3 py-lg-4">
+        {/* Cabeçalho */}
         <header className="game-header mb-3">
           <div>
             <span className="eyebrow">🌿 ODS 15 · Vida Terrestre</span>
@@ -232,7 +228,7 @@ function App() {
           </button>
         </header>
 
-        {/* Barra de status */}
+        {/* Stats bar */}
         <div className="stats-bar glass-panel mb-3" aria-live="polite" aria-atomic="true">
           <StatItem icon="👆" label="Jogadas" value={moves} />
           <StatItem icon="⏱️" label="Tempo" value={formatTime(timeSeconds)} />
@@ -249,63 +245,57 @@ function App() {
           </div>
         </div>
 
-        {/* Banner de vitória */}
-        {isWon && (
-          <div className="win-banner" role="alert" aria-live="assertive">
-            <span className="win-banner__emoji">🎉</span>
-            <div>
-              <strong>Parabéns, {playerName}!</strong>
-              <p className="mb-0">
-                Você completou em <strong>{moves} jogadas</strong> e{' '}
-                <strong>{formatTime(timeSeconds)}</strong>!
-              </p>
+        {/* Layout 3 colunas: curiosidade | tabuleiro | leaderboard
+            Mobile: tabuleiro → curiosidade → leaderboard
+            Tablet (md): tabuleiro em cima, curiosidade + leaderboard lado a lado embaixo
+            Desktop (lg+): 3 colunas lado a lado */}
+        <div className="row g-3 align-items-start">
+
+          {/* CENTRO — tabuleiro (mobile: 1º, desktop: coluna do meio) */}
+          <div className="col-12 col-lg-6 order-1 order-lg-2">
+            {isWon && (
+              <div className="win-banner mb-3" role="alert" aria-live="assertive">
+                <span className="win-banner__emoji">🎉</span>
+                <div>
+                  <strong>Parabéns, {playerName}!</strong>
+                  <p className="mb-0">
+                    Você completou em <strong>{moves} jogadas</strong> e{' '}
+                    <strong>{formatTime(timeSeconds)}</strong>!
+                  </p>
+                </div>
+                <button type="button" className="btn btn-success btn-sm ms-auto" onClick={handlePlayAgain}>
+                  Jogar Novamente
+                </button>
+              </div>
+            )}
+
+            <div className="board-wrapper glass-panel p-2 p-md-3">
+              <MemoryBoard cards={cards} onCardClick={flipCard} />
             </div>
-            <button type="button" className="btn btn-success btn-sm" onClick={handlePlayAgain}>
-              Jogar Novamente
-            </button>
-          </div>
-        )}
 
-        {/* Tabuleiro */}
-        <div className="board-wrapper">
-          <MemoryBoard cards={cards} onCardClick={flipCard} />
-        </div>
-
-        {/* Botões de ação (visíveis durante o jogo ou após vitória) */}
-        <div className="action-bar mt-3">
-          <button type="button" className="btn btn-outline-success" onClick={handlePlayAgain}>
-            🔄 {isPlaying ? 'Reiniciar' : 'Jogar Novamente'}
-          </button>
-        </div>
-
-        {/* Seção de curiosidade */}
-        <FactSection
-          animal={lastMatchedAnimal}
-          fact={fact}
-          isLoading={factLoading}
-          error={factError}
-        />
-
-        {/* Leaderboard */}
-        <LeaderboardSection entries={entries} onClear={clearLeaderboard} />
-
-        {/* Heurísticas de Nielsen */}
-        <section className="glass-panel panel-spacing mt-4">
-          <div className="panel-heading">
-            <div>
-              <span className="eyebrow">Usabilidade</span>
-              <h2 className="panel-title">Heurísticas de Nielsen</h2>
+            <div className="text-center mt-2">
+              <button type="button" className="btn btn-outline-success btn-sm" onClick={handlePlayAgain}>
+                🔄 {isPlaying ? 'Reiniciar' : 'Jogar Novamente'}
+              </button>
             </div>
           </div>
-          <div className="heuristics-list">
-            {NIELSEN_HEURISTICS.map((h) => (
-              <article className="heuristic-card" key={h.id}>
-                <h3>{h.title}</h3>
-                <p>{h.description}</p>
-              </article>
-            ))}
+
+          {/* ESQUERDA — curiosidade (mobile: 2º, desktop: coluna esquerda) */}
+          <div className="col-12 col-md-6 col-lg-3 order-2 order-lg-1">
+            <FactSection
+              animal={lastMatchedAnimal}
+              fact={fact}
+              isLoading={factLoading}
+              error={factError}
+            />
           </div>
-        </section>
+
+          {/* DIREITA — leaderboard (mobile: 3º, desktop: coluna direita) */}
+          <div className="col-12 col-md-6 col-lg-3 order-3 order-lg-3">
+            <LeaderboardSection entries={entries} onClear={clearLeaderboard} />
+          </div>
+
+        </div>
       </div>
     </main>
   );
