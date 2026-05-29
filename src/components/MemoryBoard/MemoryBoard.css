@@ -1,0 +1,22 @@
+/* Grade 4×4 responsiva */
+.memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 2vw, 16px);
+  padding: clamp(12px, 2.5vw, 22px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.14);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 400px) {
+  .memory-board {
+    gap: 6px;
+    padding: 10px;
+  }
+}

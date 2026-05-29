@@ -1,0 +1,109 @@
+/* ── Contêiner com perspectiva para o flip 3D ── */
+.memory-card {
+  perspective: 900px;
+  cursor: pointer;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  outline: none;
+}
+
+.memory-card[tabindex='-1'] {
+  cursor: default;
+}
+
+/* ── Elemento interno que rotaciona ── */
+.memory-card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.48s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: 16px;
+}
+
+.memory-card--flipped .memory-card__inner {
+  transform: rotateY(180deg);
+}
+
+/* ── Faces da carta ── */
+.memory-card__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+/* Verso (verde, exibido quando face-down) */
+.memory-card__face--back {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 55%, #166534 100%);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.memory-card__back-icon {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  opacity: 0.65;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Frente (animal, exibido ao virar) */
+.memory-card__face--front {
+  background: var(--card-bg, #f9fafb);
+  border: 2px solid color-mix(in srgb, var(--card-color, #6b7280) 25%, transparent);
+  transform: rotateY(180deg);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Estado: par encontrado */
+.memory-card--matched .memory-card__face--front {
+  border-color: #16a34a;
+  box-shadow:
+    0 0 0 3px rgba(22, 163, 74, 0.28),
+    0 4px 14px rgba(0, 0, 0, 0.1);
+  animation: matchPop 0.45s ease-out;
+}
+
+.memory-card__emoji {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1;
+}
+
+.memory-card__name {
+  font-size: clamp(0.5rem, 1.4vw, 0.7rem);
+  font-weight: 700;
+  color: var(--card-color, #374151);
+  text-align: center;
+  letter-spacing: 0.2px;
+  padding: 0 4px;
+}
+
+/* ── Hover: carta ainda não virada ── */
+.memory-card:not(.memory-card--flipped):not(.memory-card--matched):hover .memory-card__inner {
+  transform: rotateY(12deg) scale(1.06);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Foco via teclado ── */
+.memory-card:focus-visible .memory-card__inner {
+  box-shadow: 0 0 0 3px #22c55e;
+}
+
+/* ── Animações ── */
+@keyframes matchPop {
+  0% { transform: rotateY(180deg) scale(1); }
+  45% { transform: rotateY(180deg) scale(1.12); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}

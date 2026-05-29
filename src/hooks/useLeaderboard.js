@@ -42,8 +42,8 @@ const saveToStorage = (entries) => {
 
 /**
  * @typedef {Object} LeaderboardHookReturn
- * @property {import('../domain/leaderboard').LeaderboardEntry[]} entries     - Lista atual do placar
- * @property {Function} recordWin       - Registra ou atualiza vitória de um jogador
+ * @property {import('../domain/leaderboard').LeaderboardEntry[]} entries
+ * @property {Function} recordScore      - Registra ou atualiza resultado de uma partida
  * @property {Function} clearLeaderboard - Limpa todo o placar
  */
 
@@ -60,14 +60,14 @@ const useLeaderboard = () => {
   }, [entries]);
 
   /**
-   * Registra uma vitória. Atualiza a entrada existente se o novo total for maior.
+   * Registra a pontuação de uma partida concluída.
+   * Atualiza a entrada existente somente se o resultado for melhor.
    * @param {string} playerName
-   * @param {string} animalName
-   * @param {string} animalEmoji
-   * @param {number} wins - Total de vitórias acumuladas na sessão
+   * @param {number} moves
+   * @param {number} timeSeconds
    */
-  const recordWin = useCallback((playerName, animalName, animalEmoji, wins) => {
-    const entry = createEntry(playerName, animalName, animalEmoji, wins);
+  const recordScore = useCallback((playerName, moves, timeSeconds) => {
+    const entry = createEntry(playerName, moves, timeSeconds);
     setEntries((prev) => upsertEntry(prev, entry));
   }, []);
 
@@ -76,7 +76,7 @@ const useLeaderboard = () => {
     setEntries([]);
   }, []);
 
-  return { entries, recordWin, clearLeaderboard };
+  return { entries, recordScore, clearLeaderboard };
 };
 
 export default useLeaderboard;

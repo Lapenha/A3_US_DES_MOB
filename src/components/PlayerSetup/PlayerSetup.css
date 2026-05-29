@@ -1,27 +1,28 @@
+/* ─── PlayerSetup.css ──────────────────────────────────────────────────────
+   Estilos da tela inicial do Jogo da Memória (single player).
+   ──────────────────────────────────────────────────────────────────────── */
+
 .player-setup {
-  max-width: 860px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem;
   animation: fadeSlideIn 0.4s ease-out;
 }
 
-/* ── Cabeçalho ── */
-.player-setup__header {
-  margin-bottom: 2rem;
-}
+.player-setup__header { padding: 1.5rem 0; }
 
 .player-setup__title {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
   font-weight: 800;
   color: #1a3c2e;
-  letter-spacing: -1px;
-  margin: 0;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
 }
 
 .player-setup__subtitle {
-  color: #6b7280;
-  font-size: 1rem;
-  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
 }
 
 .ods-badge {
@@ -32,127 +33,65 @@
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
 }
 
-/* ── Cards dos jogadores ── */
-.player-card {
-  border-radius: 24px;
-  border: 2px solid transparent;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+/* Card do formulário */
+.setup-card {
+  border: 1px solid rgba(25, 135, 84, 0.25) !important;
+  border-radius: 16px !important;
 }
 
-.player-card--p1 { border-top: 4px solid #3b82f6; }
-.player-card--p2 { border-top: 4px solid #f59e0b; }
-
-.player-card:hover {
-  transform: translateY(-4px);
+.setup-description {
+  color: #495057;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.player-card__title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-  color: #1f2937;
-}
-
-.player-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: #fff;
-}
-.player-badge--p1 { background: #3b82f6; }
-.player-badge--p2 { background: #f59e0b; }
-
-/* ── Grade de animais ── */
-.animal-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-}
-
-@media (max-width: 420px) {
-  .animal-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.35rem;
-  }
-}
-
-/* ── Card de animal ── */
-.animal-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 0.55rem 0.3rem;
-  border-radius: 16px;
-  border: 2px solid #e5e7eb;
-  background: var(--animal-bg, #f9fafb);
-  cursor: pointer;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-  font-size: 0;
-}
-
-.animal-card:hover:not(.animal-card--disabled) {
-  transform: translateY(-3px) scale(1.05);
-  border-color: var(--animal-border);
-  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
-}
-
-.animal-card--selected {
-  border-color: var(--animal-border) !important;
-  background: var(--animal-bg) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--animal-border) 30%, transparent);
-  transform: scale(1.08);
-}
-
-.animal-card--disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  filter: grayscale(60%);
-}
-
-.animal-card__emoji {
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.animal-card__name {
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: var(--animal-color);
-  text-align: center;
-  line-height: 1.2;
-}
-
-/* ── Botão iniciar ── */
+/* Botão iniciar */
 .start-btn {
-  border-radius: 999px;
+  background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+  border: none;
+  border-radius: 50px;
   font-weight: 700;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 14px rgba(22,163,74,0.4);
-  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
 }
 
 .start-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(22,163,74,0.5);
+  box-shadow: 0 6px 20px rgba(25, 135, 84, 0.45);
 }
 
-/* ── Animação de entrada ── */
+.start-btn:active { transform: translateY(0); }
+
+/* Cards de instrução */
+.instruction-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(25, 135, 84, 0.18);
+  border-radius: 14px;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.instruction-card__icon {
+  font-size: 1.75rem;
+  display: block;
+}
+
+.instruction-card__text {
+  font-size: 0.82rem;
+  color: #495057;
+  margin: 0;
+  line-height: 1.4;
+}
+
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }

@@ -1,46 +1,43 @@
 /**
- * @fileoverview Lógica de domínio do Placar de Líderes (Leaderboard).
+ * @fileoverview Lógica de domínio do Placar de Líderes (Leaderboard) – Jogo da Memória.
  *
- * Funções puras que manipulam a lista de entradas do leaderboard.
- * Não dependem de React nem de localStorage — armazenamento é responsabilidade do hook.
+ * Funções puras que manipulam a lista de entradas.
+ * Ranking por menor número de jogadas; desempate pelo menor tempo.
  */
 
 import { LEADERBOARD_MAX_ENTRIES } from './constants';
 
 /**
  * @typedef {Object} LeaderboardEntry
- * @property {string} id          - Identificador único da entrada
+ * @property {string} id          - Identificador único
  * @property {string} playerName  - Nome do jogador
- * @property {string} animalName  - Nome do animal escolhido
- * @property {string} animalEmoji - Emoji do animal escolhido
- * @property {number} wins        - Total de vitórias na sessão
- * @property {string} timestamp   - ISO 8601 do momento do registro
+ * @property {number} moves       - Jogadas para completar
+ * @property {number} timeSeconds - Tempo em segundos
+ * @property {string} timestamp   - ISO 8601 do registro
  */
 
 /**
  * Cria uma nova entrada para o leaderboard.
  * @param {string} playerName
- * @param {string} animalName
- * @param {string} animalEmoji
- * @param {number} wins
+ * @param {number} moves
+ * @param {number} timeSeconds
  * @returns {LeaderboardEntry}
  */
-export const createEntry = (playerName, animalName, animalEmoji, wins) => ({
+export const createEntry = (playerName, moves, timeSeconds) => ({
   id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
   playerName,
-  animalName,
-  animalEmoji,
-  wins,
+  moves,
+  timeSeconds,
   timestamp: new Date().toISOString(),
 });
 
 /**
  * Insere ou atualiza uma entrada no leaderboard.
- * Se o jogador já existir, atualiza somente se o novo total de vitórias for maior.
- * Retorna a lista ordenada por vitórias (decrescente), limitada ao máximo configurado.
+ * Atualiza somente se o resultado for melhor (menos jogadas; empate → menos tempo).
+ * Retorna a lista ordenada (ascendente por jogadas, depois por tempo).
  *
- * @param {LeaderboardEntry[]} entries - Entradas atuais
- * @param {LeaderboardEntry} newEntry  - Nova entrada a inserir/atualizar
+ * @param {LeaderboardEntry[]} entries
+ * @param {LeaderboardEntry} newEntry
  * @returns {LeaderboardEntry[]}
  */
 export const upsertEntry = (entries, newEntry) => {
@@ -52,15 +49,20 @@ export const upsertEntry = (entries, newEntry) => {
 
   if (existingIndex >= 0) {
     const existing = entries[existingIndex];
-    if (newEntry.wins <= existing.wins) return entries; // sem melhora, não altera
+    const isBetter =
+      newEntry.moves < existing.moves ||
+      (newEntry.moves === existing.moves && newEntry.timeSeconds < existing.timeSeconds);
+    if (!isBetter) return entries;
     updated = entries.map((e, i) =>
-      i === existingIndex ? { ...e, wins: newEntry.wins, timestamp: newEntry.timestamp } : e,
+      i === existingIndex
+        ? { ...e, moves: newEntry.moves, timeSeconds: newEntry.timeSeconds, timestamp: newEntry.timestamp }
+        : e,
     );
   } else {
     updated = [...entries, newEntry];
   }
 
   return updated
-    .sort((a, b) => b.wins - a.wins || new Date(b.timestamp) - new Date(a.timestamp))
+    .sort((a, b) => a.moves - b.moves || a.timeSeconds - b.timeSeconds)
     .slice(0, LEADERBOARD_MAX_ENTRIES);
 };

@@ -7,19 +7,17 @@
  */
 
 /**
- * Fases possíveis do jogo.
+ * Fases possíveis do Jogo da Memória.
  * @readonly
  * @enum {string}
  */
 export const GAME_STATUS = Object.freeze({
-  SETUP: 'setup',
   PLAYING: 'playing',
-  WIN: 'win',
-  DRAW: 'draw',
+  WON: 'won',
 });
 
-/** Chave usada no localStorage para persistir a sessão atual do jogo */
-export const GAME_SESSION_STORAGE_KEY = 'jogo_velha_animais_session_v1';
+/** Chave usada no localStorage para persistir o nome do jogador */
+export const GAME_SESSION_STORAGE_KEY = 'jogo_memoria_animais_player_v1';
 
 /**
  * Lista de animais disponíveis para seleção.
@@ -112,7 +110,7 @@ export const ANIMALS = [
 ];
 
 /** Chave usada no localStorage para persistir o placar entre sessões */
-export const LEADERBOARD_STORAGE_KEY = 'jogo_velha_animais_leaderboard_v1';
+export const LEADERBOARD_STORAGE_KEY = 'jogo_memoria_animais_leaderboard_v1';
 
 /** Número máximo de entradas exibidas no placar de líderes */
 export const LEADERBOARD_MAX_ENTRIES = 10;
@@ -122,26 +120,31 @@ export const NIELSEN_HEURISTICS = [
   {
     id: 'status',
     title: 'Visibilidade do status do sistema',
-    description: 'Feedback em tempo real com placar, vez atual, progresso da rodada e banner de resultado.',
+    description:
+      'Contador de jogadas, cronômetro ao vivo, barra de progresso e banner de vitória fornecem feedback contínuo ao jogador.',
   },
   {
     id: 'freedom',
     title: 'Controle e liberdade do usuário',
-    description: 'Botões para reiniciar rodada, zerar a sessão e trocar jogadores a qualquer momento.',
+    description:
+      'Botões "Jogar Novamente" e "Trocar Jogador" permitem reiniciar ou sair a qualquer momento sem perda de contexto.',
   },
   {
     id: 'errors',
     title: 'Prevenção de erros',
-    description: 'Validação no setup, bloqueio de jogadas inválidas e mensagens claras quando faltam dados.',
+    description:
+      'Cliques são bloqueados durante a animação de flip e em cartas já viradas, impedindo jogadas acidentais inválidas.',
   },
   {
     id: 'recognition',
     title: 'Reconhecimento em vez de memorização',
-    description: 'Animais sempre visíveis com nome, cor e emoji identificando rapidamente cada jogador.',
+    description:
+      'Cartas reveladas mostram emoji e nome do animal imediatamente; pares encontrados ficam permanentemente visíveis.',
   },
   {
     id: 'minimalism',
     title: 'Estética e design minimalista',
-    description: 'Layout limpo, responsivo e focado em poucas ações principais por etapa do jogo.',
+    description:
+      'Interface limpa com grade centralizada, paleta verde do ODS 15 e informações adicionais (leaderboard, fatos) em painéis colapsáveis abaixo.',
   },
 ];
