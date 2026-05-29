@@ -11,6 +11,41 @@ import useGame from './hooks/useGame';
 import useLeaderboard from './hooks/useLeaderboard';
 import './App.css';
 
+const isValidAnimal = (animal) =>
+  animal &&
+  typeof animal.id === 'string' &&
+  typeof animal.name === 'string' &&
+  typeof animal.emoji === 'string' &&
+  typeof animal.wikiTitle === 'string';
+
+const isValidPlayer = (player) =>
+  player && typeof player.name === 'string' && player.name.trim() && isValidAnimal(player.animal);
+
+const normalizePlayers = (players) => {
+  if (!players || !isValidPlayer(players.player1) || !isValidPlayer(players.player2)) {
+    return null;
+  }
+
+  if (players.player1.name.trim().toLowerCase() === players.player2.name.trim().toLowerCase()) {
+    return null;
+  }
+
+  if (players.player1.animal.id === players.player2.animal.id) {
+    return null;
+  }
+
+  return {
+    player1: {
+      name: players.player1.name.trim(),
+      animal: players.player1.animal,
+    },
+    player2: {
+      name: players.player2.name.trim(),
+      animal: players.player2.animal,
+    },
+  };
+};
+
 const loadSession = () => {
   try {
     const raw = localStorage.getItem(GAME_SESSION_STORAGE_KEY);
@@ -19,15 +54,11 @@ const loadSession = () => {
     }
 
     const parsed = JSON.parse(raw);
-    const hasPlayers =
-      parsed?.players?.player1?.name &&
-      parsed?.players?.player1?.animal?.id &&
-      parsed?.players?.player2?.name &&
-      parsed?.players?.player2?.animal?.id;
+    const normalizedPlayers = normalizePlayers(parsed?.players);
 
     return {
-      players: hasPlayers ? parsed.players : null,
-      game: parsed?.game ?? null,
+      players: normalizedPlayers,
+      game: normalizedPlayers ? parsed?.game ?? null : null,
     };
   } catch (error) {
     console.warn('[App] Não foi possível restaurar a sessão salva.', error);
@@ -199,10 +230,21 @@ function App() {
     snapshot,
   } = useGame(initialSession.game);
 
-  const winnerPlayer = players && winner ? players[winner] : null;
+  const playersReady = Boolean(
+    players &&
+      isValidPlayer(players.player1) &&
+      isValidPlayer(players.player2) &&
+      players.player1.animal.id !== players.player2.animal.id,
+  );
+  const winnerPlayer = playersReady && winner ? players[winner] : null;
   const filledCells = useMemo(() => board.filter(Boolean).length, [board]);
   const totalRounds = scores.player1 + scores.player2 + scores.draws;
-  const statusMessage = getStatusMessage({ gameStatus, currentPlayer, players, winner });
+  const statusMessage = getStatusMessage({
+    gameStatus,
+    currentPlayer,
+    players: playersReady ? players : null,
+    winner,
+  });
   const roundResolutionKey =
     gameStatus === GAME_STATUS.WIN && winner
       ? `${winner}-${scores[winner]}-${board.join('|')}`
@@ -211,13 +253,13 @@ function App() {
         : '';
 
   useEffect(() => {
-    if (!players) {
+    if (!playersReady) {
       clearSavedSession();
       return;
     }
 
     saveSession({ players, game: snapshot });
-  }, [players, snapshot]);
+  }, [players, playersReady, snapshot]);
 
   useEffect(() => {
     if (gameStatus === GAME_STATUS.PLAYING) {
@@ -275,7 +317,7 @@ function App() {
       <div className="app-shell__aurora app-shell__aurora--two" aria-hidden="true" />
 
       <div className="container py-4 py-lg-5">
-        {!players ? (
+        {!playersReady ? (
           <PlayerSetup onStartGame={handleStartGame} />
         ) : (
           <div className="game-layout">
@@ -317,7 +359,7 @@ function App() {
                       <p className="mb-0">{statusMessage}</p>
                     </div>
                     <span className="status-banner__emoji" aria-hidden="true">
-                      {winnerPlayer ? winnerPlayer.animal.emoji : players[currentPlayer].animal.emoji}
+                      {winnerPlayer ? winnerPlayer.animal.emoji : players[currentPlayer]?.animal?.emoji ?? '🌿'}
                     </span>
                   </div>
 

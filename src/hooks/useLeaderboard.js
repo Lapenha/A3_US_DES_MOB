@@ -20,7 +20,8 @@ import { createEntry, upsertEntry } from '../domain/leaderboard';
 const loadFromStorage = () => {
   try {
     const raw = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     console.warn('[Leaderboard] Não foi possível carregar do localStorage.', error);
     return [];

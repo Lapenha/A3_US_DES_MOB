@@ -33,43 +33,56 @@ const INITIAL_SCORES = { player1: 0, player2: 0, draws: 0 };
  * Hook que gerencia todo o estado e fluxo de uma partida.
  * @returns {GameHookReturn}
  */
+const createDefaultSnapshot = () => ({
+  board: createEmptyBoard(),
+  currentPlayer: 'player1',
+  gameStatus: GAME_STATUS.PLAYING,
+  winner: null,
+  winningLine: null,
+  scores: INITIAL_SCORES,
+});
+
 const getInitialSnapshot = (snapshot) => {
+  const safeSnapshot = snapshot && typeof snapshot === 'object' ? snapshot : null;
+
+  if (!safeSnapshot) {
+    return createDefaultSnapshot();
+  }
+
+  const board = safeSnapshot.board;
+  const scores = safeSnapshot.scores;
+  const winner = safeSnapshot.winner;
+  const winningLine = safeSnapshot.winningLine;
+  const gameStatus = safeSnapshot.gameStatus;
+
   const hasValidBoard =
-    Array.isArray(snapshot?.board) &&
-    snapshot.board.length === 9 &&
-    snapshot.board.every((cell) => cell === null || cell === 'player1' || cell === 'player2');
+    Array.isArray(board) &&
+    board.length === 9 &&
+    board.every((cell) => cell === null || cell === 'player1' || cell === 'player2');
 
   const hasValidScores =
-    snapshot?.scores &&
-    typeof snapshot.scores.player1 === 'number' &&
-    typeof snapshot.scores.player2 === 'number' &&
-    typeof snapshot.scores.draws === 'number';
+    scores &&
+    typeof scores.player1 === 'number' &&
+    typeof scores.player2 === 'number' &&
+    typeof scores.draws === 'number';
 
-  const hasValidStatus = Object.values(GAME_STATUS).includes(snapshot?.gameStatus);
-  const hasValidWinner =
-    snapshot?.winner === null || snapshot?.winner === 'player1' || snapshot?.winner === 'player2';
+  const hasValidStatus = Object.values(GAME_STATUS).includes(gameStatus);
+  const hasValidWinner = winner === null || winner === 'player1' || winner === 'player2';
   const hasValidLine =
-    snapshot?.winningLine === null ||
-    (Array.isArray(snapshot.winningLine) && snapshot.winningLine.every((value) => Number.isInteger(value)));
+    winningLine == null ||
+    (Array.isArray(winningLine) && winningLine.every((value) => Number.isInteger(value)));
 
   if (!hasValidBoard || !hasValidScores || !hasValidStatus || !hasValidWinner || !hasValidLine) {
-    return {
-      board: createEmptyBoard(),
-      currentPlayer: 'player1',
-      gameStatus: GAME_STATUS.PLAYING,
-      winner: null,
-      winningLine: null,
-      scores: INITIAL_SCORES,
-    };
+    return createDefaultSnapshot();
   }
 
   return {
-    board: snapshot.board,
-    currentPlayer: snapshot.currentPlayer === 'player2' ? 'player2' : 'player1',
-    gameStatus: snapshot.gameStatus,
-    winner: snapshot.winner,
-    winningLine: snapshot.winningLine,
-    scores: snapshot.scores,
+    board,
+    currentPlayer: safeSnapshot.currentPlayer === 'player2' ? 'player2' : 'player1',
+    gameStatus,
+    winner,
+    winningLine,
+    scores,
   };
 };
 
