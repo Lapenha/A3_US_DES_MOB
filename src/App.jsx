@@ -351,10 +351,14 @@ function App() {
             </div>
 
             <div className="text-center mt-2">
-              <button type="button" className="btn btn-outline-success btn-sm" onClick={handlePlayAgain}>
-                🔄 {isPlaying ? 'Reiniciar' : 'Jogar Novamente'}
-              </button>
-            </div>
+            <button
+             type="button"
+                className="play-again-btn"
+               onClick={handlePlayAgain}
+            >
+              🎮 {isPlaying ? 'Nova Partida' : 'Jogar Novamente'}
+            </button>
+</div>
           </div>
 
           {/* ESQUERDA — curiosidade (mobile: 2º, desktop: coluna esquerda) */}

@@ -63,7 +63,7 @@
 }
 
 /* Estado: par encontrado */
-.memory-card--matched .memory-card__face--front {
+.memory-card--matched .memory-card__face--front { 
   border-color: #16a34a;
   box-shadow:
     0 0 0 3px rgba(22, 163, 74, 0.28),
@@ -71,9 +71,11 @@
   animation: matchPop 0.45s ease-out;
 }
 
-.memory-card__emoji {
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  line-height: 1;
+.memory-card__image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 6px;
 }
 
 .memory-card__name {
