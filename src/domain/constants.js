@@ -19,6 +19,16 @@ export const GAME_STATUS = Object.freeze({
 /** Chave usada no localStorage para persistir o nome do jogador */
 export const GAME_SESSION_STORAGE_KEY = 'jogo_memoria_animais_player_v1';
 
+/** Imagens dos animais importadas */
+import eagle from '../assets/animals/Eagle.png';
+import elephant from '../assets/animals/Elephant.png';
+import gorilla from '../assets/animals/Gorilla.png';
+import leopard from '../assets/animals/Leopard.png';
+import lion from '../assets/animals/Lion.png';
+import panda from '../assets/animals/Panda.png';
+import tiger from '../assets/animals/Tiger.png';
+import wolf from '../assets/animals/Wolf.png'
+
 /**
  * Lista de animais disponíveis para seleção.
  * Cada animal está associado a um artigo da Wikipedia para busca de fatos educativos.
@@ -38,7 +48,7 @@ export const ANIMALS = [
   {
     id: 'lion',
     name: 'Leão',
-    emoji: '🦁',
+    image: lion,
     wikiTitle: 'Leão',
     color: '#d97706',
     bgColor: '#fffbeb',
@@ -47,7 +57,7 @@ export const ANIMALS = [
   {
     id: 'elephant',
     name: 'Elefante',
-    emoji: '🐘',
+    image: elephant,
     wikiTitle: 'Elefante-africano',
     color: '#6b7280',
     bgColor: '#f9fafb',
@@ -56,7 +66,7 @@ export const ANIMALS = [
   {
     id: 'leopard',
     name: 'Leopardo',
-    emoji: '🐆',
+    image: leopard,
     wikiTitle: 'Leopardo',
     color: '#b45309',
     bgColor: '#fef3c7',
@@ -65,7 +75,7 @@ export const ANIMALS = [
   {
     id: 'gorilla',
     name: 'Gorila',
-    emoji: '🦍',
+    image: gorilla,
     wikiTitle: 'Gorila',
     color: '#374151',
     bgColor: '#f3f4f6',
@@ -74,7 +84,7 @@ export const ANIMALS = [
   {
     id: 'tiger',
     name: 'Tigre',
-    emoji: '🐅',
+    image: tiger,
     wikiTitle: 'Tigre',
     color: '#c2410c',
     bgColor: '#fff7ed',
@@ -83,7 +93,7 @@ export const ANIMALS = [
   {
     id: 'panda',
     name: 'Panda',
-    emoji: '🐼',
+    image: panda,
     wikiTitle: 'Panda-gigante',
     color: '#1f2937',
     bgColor: '#f9fafb',
@@ -92,7 +102,7 @@ export const ANIMALS = [
   {
     id: 'wolf',
     name: 'Lobo',
-    emoji: '🐺',
+    image: wolf,
     wikiTitle: 'Lobo',
     color: '#4b5563',
     bgColor: '#f3f4f6',
@@ -101,7 +111,7 @@ export const ANIMALS = [
   {
     id: 'eagle',
     name: 'Águia',
-    emoji: '🦅',
+    image: eagle,
     wikiTitle: 'Águia-careca',
     color: '#92400e',
     bgColor: '#fef3c7',

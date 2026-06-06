@@ -14,7 +14,7 @@ import { ANIMALS } from './constants';
  * @property {number}  index     - Posição no tabuleiro (0–15)
  * @property {string}  animalId  - ID do animal (para verificação de par)
  * @property {string}  pairKey   - Chave única da carta ('lion-a' | 'lion-b')
- * @property {string}  emoji     - Emoji do animal
+ * @property {string} image      - Caminho da imagem do animal
  * @property {string}  name      - Nome em português
  * @property {string}  color     - Cor primária (texto)
  * @property {string}  bgColor   - Cor de fundo ao virar
@@ -49,17 +49,17 @@ export const createCards = () => {
   ]);
 
   return shuffle(pairs).map((card, index) => ({
-    index,
-    animalId: card.id,
-    pairKey: card.pairKey,
-    emoji: card.emoji,
-    name: card.name,
-    color: card.color,
-    bgColor: card.bgColor,
-    wikiTitle: card.wikiTitle,
-    isFlipped: false,
-    isMatched: false,
-  }));
+  index,
+  animalId: card.id,
+  pairKey: card.pairKey,
+  image: card.image,
+  name: card.name,
+  color: card.color,
+  bgColor: card.bgColor,
+  wikiTitle: card.wikiTitle,
+  isFlipped: false,
+  isMatched: false,
+}));
 };
 
 /**

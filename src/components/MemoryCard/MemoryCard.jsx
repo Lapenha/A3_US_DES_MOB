@@ -17,7 +17,7 @@ import './MemoryCard.css';
  * @param {boolean}  props.isLocked  - Bloqueia interação (ex: jogo encerrado)
  */
 const MemoryCard = ({ card, onClick, isLocked }) => {
-  const { isFlipped, isMatched, emoji, name, color, bgColor } = card;
+  const { isFlipped, isMatched, image, name, color, bgColor } = card;
   const showFront = isFlipped || isMatched;
   const interactive = !isLocked && !isFlipped && !isMatched;
 
@@ -46,9 +46,12 @@ const MemoryCard = ({ card, onClick, isLocked }) => {
           className="memory-card__face memory-card__face--front"
           style={{ '--card-color': color, '--card-bg': bgColor }}
         >
-          <span className="memory-card__emoji" role="img" aria-hidden="true">
-            {emoji}
-          </span>
+          <img
+           src={image}
+           alt={name}
+           className="memory-card__image"
+          />
+          
           <span className="memory-card__name">{name}</span>
         </div>
       </div>
